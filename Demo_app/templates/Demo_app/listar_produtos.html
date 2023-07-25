@@ -1,0 +1,118 @@
+{% extends "Demo_app/base.html" %}
+
+{% load static %}
+
+
+
+{% block head %}
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+{% endblock head %}
+
+{% block javascript %}
+    <script src="{% static 'js/script.js' %}"></script>
+{% endblock javascript %}
+
+{% block content %}
+    <h1 class="page-header">Produtos</h1>
+    <p>
+      <button type="button" class="btn btn-success js-criar-produto" data-url="{% url 'Demo_app:criar_produto' %}" data-toggle="modal" data-target="#exampleModal">
+        <span class="glyphicon glyphicon-plus"></span>
+        Novo Produto
+      </button>
+      {% comment %} <button type="button" class="btn btn-primary js-criar-produto" data-url="{% url 'Demo_app:criar_produto' %}">
+        <span class="glyphicon glyphicon-plus"></span>
+        Novo Produto
+      </button> {% endcomment %}
+    </p>
+    <table class="table" id="produto-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Data Adicionada</th>
+                <th>Categoria</th>
+                <th>Codigo do Produto</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{produto.nome}}</td>
+                <td>{{produto.adicionado_em}}</td>
+                <td>{{produto.categoria_tipo}}</td>
+                <td>{{produto.codigo_produto}}</td>
+                <td>{{produto.quantidade}}</td>
+                <td>{{produto.preco}}</td>
+                <td>
+                    <button type="button" class="btn btn-warning">Editar</button>
+                    <button type="button" class="btn btn-danger">Excluir</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    {% comment %} modal teste do bootstrap {% endcomment %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="post">
+              {% load crispy_forms_tags %}
+              {% csrf_token %}
+              {{form|crispy }}
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modal-product">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="{% url 'Demo_app:criar_produto' %}" class="js-product-create-form">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class='modal-title'>Criar um novo produto</h4>
+                    </div>
+                    <div class="modal-body">
+                        {% load widget_tweaks %}
+                        {% for field in form %}
+                            <div class="form-group {% if field.erros %} has-error {% endif %}">
+                                <label for="{{field.id_for_label}}">{{field.label}}</label>
+                                {% render_field field class="form-control" %}
+                                {% for error in field.errors %}
+                                    <p class="help-block">{{error}}</p>
+                                {% endfor %}
+
+                            </div>
+                        {% endfor %}
+                        {{form}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Criar Produto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

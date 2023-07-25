@@ -1,0 +1,14 @@
+#list-group {
+    
+    flex-direction: row;
+}
+
+.items {
+    display: flex;
+    flex-direction: row;
+}
+
+.esconder {
+    background-color: red;
+    color: red;
+}
